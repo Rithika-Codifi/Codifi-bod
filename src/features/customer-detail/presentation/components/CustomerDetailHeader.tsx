@@ -1,15 +1,23 @@
 import { BackLink, PageHeader } from '@/shared/layout';
-import { Button, LinkButton, RefreshIcon, StatStrip, StatusBadge } from '@/shared/ui';
+import { Button, DownloadIcon, RefreshIcon, StatStrip, StatusBadge } from '@/shared/ui';
 
 import type { CustomerDetailModel } from '../state/customerDetailState';
 
 export interface CustomerDetailHeaderProps {
   header: CustomerDetailModel['header'];
   retesting: boolean;
+  downloading: boolean;
   onRetestFailed: () => void;
+  onDownloadReport: () => void;
 }
 
-export function CustomerDetailHeader({ header, retesting, onRetestFailed }: CustomerDetailHeaderProps) {
+export function CustomerDetailHeader({
+  header,
+  retesting,
+  downloading,
+  onRetestFailed,
+  onDownloadReport,
+}: CustomerDetailHeaderProps) {
   return (
     <PageHeader className="flex flex-col gap-[14px] px-[16px] pt-[10px] pb-[18px]">
       <BackLink to="/customers" label="Customers" />
@@ -33,9 +41,20 @@ export function CustomerDetailHeader({ header, retesting, onRetestFailed }: Cust
         >
           Retest failed
         </Button>
+        {/* Navigation to the test report screen is disabled for now.
         <LinkButton to={header.reportHref} variant="outline" fill>
           View report
         </LinkButton>
+        */}
+        <Button
+          variant="outline"
+          fill
+          icon={<DownloadIcon size={16} />}
+          loading={downloading}
+          onClick={onDownloadReport}
+        >
+          Download report
+        </Button>
       </div>
     </PageHeader>
   );

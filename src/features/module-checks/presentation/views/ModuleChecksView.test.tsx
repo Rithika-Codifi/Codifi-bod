@@ -4,6 +4,8 @@ import userEvent from '@testing-library/user-event';
 import { renderRoute } from '@/test/renderRoute';
 import { testContainer } from '@/test/testContainer';
 
+import type { DownloadChecksReport } from '../../domain';
+
 import ModuleChecksView from './ModuleChecksView';
 
 const rows = () =>
@@ -52,5 +54,21 @@ describe('ModuleChecksView', () => {
     expect(screen.getByText('Last check 07:38:12 · avg 182 ms')).toBeInTheDocument();
     expect(rows()).toHaveLength(13);
     expect(screen.getByRole('button', { name: 'Show 21 more passed checks' })).toBeInTheDocument();
+  });
+
+  it('downloads the report as a PDF instead of opening the report screen', async () => {
+    const execute = vi.fn().mockResolvedValue('bod-report.pdf');
+    renderRoute(<ModuleChecksView />, {
+      path: '/customers/:customerId/modules/:moduleId',
+      url: '/customers/cholamandalam/modules/open-api',
+      container: testContainer({
+        moduleChecks: { downloadReport: { execute } as unknown as DownloadChecksReport },
+      }),
+    });
+    expect(screen.queryByRole('link', { name: /Test report/ })).not.toBeInTheDocument();
+    await userEvent.click(await screen.findByRole('button', { name: /Download report/ }, { timeout: 3000 }));
+    expect(execute).toHaveBeenCalledWith('cholamandalam', { kind: 'module', id: 'open-api' });
+    expect(await screen.findByText('Report downloaded')).toBeInTheDocument();
+    expect(screen.queryByText('navigated')).not.toBeInTheDocument();
   });
 });

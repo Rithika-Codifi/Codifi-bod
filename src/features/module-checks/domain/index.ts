@@ -3,3 +3,5 @@ export type { ModuleChecksRepository } from './repositories/ModuleChecksReposito
 export * from './usecases/GetEtlChecks';
 export * from './usecases/GetModuleChecks';
 export * from './usecases/RetestChecks';
+export type { ChecksReportExporter } from './services/ChecksReportExporter';
+export * from './usecases/DownloadChecksReport';

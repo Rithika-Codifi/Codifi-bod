@@ -44,6 +44,8 @@ export default function CustomerDetailView() {
       <CustomerDetailHeader
         header={model.header}
         retesting={state.retestingFailed}
+        downloading={state.downloading}
+        onDownloadReport={() => onIntent({ type: 'downloadReport' })}
         onRetestFailed={() => onIntent({ type: 'retestFailed' })}
       />
       <div className="flex flex-col gap-[16px] px-[16px] pt-[16px] pb-[24px]">

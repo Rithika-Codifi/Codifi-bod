@@ -5,8 +5,8 @@ import { pathToFileURL } from 'node:url';
 import { expect, test, type Page } from '@playwright/test';
 import { PNG } from 'pngjs';
 
-import { compare, type CompareResult } from './compare';
-import { screens } from './screens';
+import { compare, type CompareResult, type Rect } from './compare';
+import { DEVIATION_SELECTOR, screens } from './screens';
 
 // Thu 12 Nov 2026 07:42 IST
 const FROZEN_NOW = new Date('2026-11-12T07:42:00+05:30');
@@ -24,6 +24,8 @@ interface ScreenResult {
   floor: number;
   /** Ours vs the original source rendered in Chromium. */
   source: CompareResult;
+  /** Number of masked deviation regions. */
+  masked: number;
 }
 
 const results: Record<string, ScreenResult> = {};
@@ -31,11 +33,12 @@ const results: Record<string, ScreenResult> = {};
 test.afterAll(() => {
   fs.mkdirSync(OUT_DIR, { recursive: true });
   fs.writeFileSync(path.join(OUT_DIR, 'report.json'), JSON.stringify(results, null, 2));
-  console.log('screen            vs PNG   PNG floor  vs source   height ours/design');
+  console.log('screen            vs PNG   PNG floor  vs source   height ours/design   masked');
   for (const [name, r] of Object.entries(results)) {
     console.log(
       `${name.padEnd(16)} ${String(r.png.mismatchPct).padStart(7)}%  ${String(r.floor).padStart(7)}%  ` +
-        `${String(r.source.mismatchPct).padStart(7)}%   ${r.png.actualHeight}/${r.png.expectedHeight} (Δ ${r.png.heightDiff})`,
+        `${String(r.source.mismatchPct).padStart(7)}%   ${r.png.actualHeight}/${r.png.expectedHeight} (Δ ${r.png.heightDiff})` +
+        `   ${r.masked}${r.png.comparedHeight < Math.min(r.png.actualHeight, r.png.expectedHeight) ? ` · top ${r.png.comparedHeight}px` : ''}`,
     );
   }
 });
@@ -77,6 +80,17 @@ for (const screen of screens.filter((s) => !only || only.includes(s.name))) {
     await page.setViewportSize({ width: 390, height });
     await page.evaluate(() => document.fonts.ready);
     const shot = await page.screenshot({ fullPage: true, animations: 'disabled' });
+    const mask: Rect[] = await page.$$eval(DEVIATION_SELECTOR, (els) =>
+      els.map((el) => {
+        const r = el.getBoundingClientRect();
+        return { x: r.x - 1, y: r.y + window.scrollY - 1, width: r.width + 2, height: r.height + 2 };
+      }),
+    );
+    const maxHeight = screen.compareUntil
+      ? await page.$eval(screen.compareUntil, (el) =>
+          Math.ceil(el.getBoundingClientRect().bottom + window.scrollY),
+        )
+      : undefined;
 
     const designBuf = fs.readFileSync(path.join(DESIGN_DIR, screen.design));
     const designHeight = PNG.sync.read(designBuf).height;
@@ -88,10 +102,11 @@ for (const screen of screens.filter((s) => !only || only.includes(s.name))) {
     fs.writeFileSync(path.join(OUT_DIR, `${screen.name}.actual.png`), shot);
     fs.writeFileSync(path.join(OUT_DIR, `${screen.name}.source.png`), sourceBuf);
 
-    const png = compare(shot, designBuf, OUT_DIR, screen.name);
-    const floor = compare(sourceBuf, designBuf, OUT_DIR, `${screen.name}.floor`).mismatchPct;
-    const source = compare(shot, sourceBuf, OUT_DIR, `${screen.name}.vs-source`);
-    results[screen.name] = { png, floor, source };
+    const opts = { mask, maxHeight };
+    const png = compare(shot, designBuf, OUT_DIR, screen.name, opts);
+    const floor = compare(sourceBuf, designBuf, OUT_DIR, `${screen.name}.floor`, opts).mismatchPct;
+    const source = compare(shot, sourceBuf, OUT_DIR, `${screen.name}.vs-source`, opts);
+    results[screen.name] = { png, floor, source, masked: mask.length };
 
     const ok =
       png.mismatchPct < MAX_MISMATCH_PCT ||

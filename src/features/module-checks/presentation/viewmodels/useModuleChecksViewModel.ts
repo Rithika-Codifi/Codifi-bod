@@ -70,6 +70,13 @@ export function useModuleChecksViewModel(): {
   });
   const { mutate } = retest;
 
+  const download = useMutation({
+    mutationFn: () => moduleChecks.downloadReport.execute(customerId, source),
+    onSuccess: () => toast.show('Report downloaded', { tone: 'success' }),
+    onError: (e) => toast.show(messageOf(e), { tone: 'error' }),
+  });
+  const { mutate: startDownload } = download;
+
   const pending = useMutationState({
     filters: { mutationKey: moduleChecksQueryKeys.retest(customerId, source), status: 'pending' },
     select: (m) => m.state.variables as string[] | undefined,
@@ -87,6 +94,11 @@ export function useModuleChecksViewModel(): {
         case 'retry':
           void refetch();
           return;
+        case 'downloadReport':
+          // Was: navigate to the test report screen (disabled for now).
+          // navigate(model.header.reportHref);
+          startDownload();
+          return;
         case 'retestFailed':
           if (model && model.header.retestIds.length > 0) mutate([...model.header.retestIds]);
           return;
@@ -97,7 +109,7 @@ export function useModuleChecksViewModel(): {
           dispatch(intent);
       }
     },
-    [refetch, mutate, model, running],
+    [refetch, mutate, startDownload, model, running],
   );
 
   const state = useMemo<ModuleChecksViewState>(() => {
@@ -119,6 +131,7 @@ export function useModuleChecksViewModel(): {
       model,
       retestingFailed: retest.isPending && running.size > 0,
       loadingMore: query.isPlaceholderData,
+      downloading: download.isPending,
     };
   }, [
     ui.filter,
@@ -127,6 +140,7 @@ export function useModuleChecksViewModel(): {
     query.error,
     query.isFetching,
     query.isPlaceholderData,
+    download.isPending,
     model,
     retest.isPending,
     running,

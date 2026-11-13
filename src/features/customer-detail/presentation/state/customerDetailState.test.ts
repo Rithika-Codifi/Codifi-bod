@@ -21,12 +21,12 @@ describe('selectCustomerDetail', () => {
       status: 'fail',
       href: '/customers/cholamandalam/modules/open-api',
     });
-    expect(m.etl[1]).toMatchObject({ status: 'fail', metaIsError: true });
+    expect(m.etl[0]).toMatchObject({ status: 'fail', metaIsError: true });
   });
 
   it('overlays running jobs optimistically', () => {
     const m = selectCustomerDetail(detail, new Set(['cm-fo']));
-    expect(m.etl[1]).toMatchObject({
+    expect(m.etl[0]).toMatchObject({
       status: 'running',
       meta: 'Retest in progress…',
       running: true,

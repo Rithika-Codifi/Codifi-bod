@@ -1,7 +1,6 @@
 import type { Status } from '@/core/domain';
-import { formatIndianNumber } from '@/core/utils';
 
-import { moduleChecksStatus, type ApiCheck, type HttpMethod, type ModuleChecks } from '../../domain';
+import { latencyLabel, moduleChecksStatus, type HttpMethod, type ModuleChecks } from '../../domain';
 
 export type CheckFilter = 'all' | 'fail' | 'warn' | 'pass';
 
@@ -10,6 +9,8 @@ export type ModuleChecksIntent =
   | { type: 'showMore' }
   | { type: 'retestFailed' }
   | { type: 'retestCheck'; checkId: string }
+  /** Download the full checks report as a PDF (replaces opening the test report screen). */
+  | { type: 'downloadReport' }
   | { type: 'retry' };
 
 export interface ModuleChecksUiState {
@@ -49,11 +50,7 @@ export interface CheckRowModel {
   readonly reportHref: string;
 }
 
-export function latencyLabel(c: Pick<ApiCheck, 'latencyMs' | 'latencyNote' | 'status'>): string {
-  const base = `${formatIndianNumber(c.latencyMs)} ms`;
-  if (!c.latencyNote) return base;
-  return c.status === 'pass' ? `${base} ${c.latencyNote}` : `${base} · ${c.latencyNote}`;
-}
+export { latencyLabel };
 
 /** Pure projection of server data + UI state + running retests into the view model. */
 export function selectModuleChecks(m: ModuleChecks, ui: ModuleChecksUiState, running: ReadonlySet<string>) {
@@ -96,11 +93,11 @@ export function selectModuleChecks(m: ModuleChecks, ui: ModuleChecksUiState, run
       sub: `Last check ${m.lastCheck} · avg ${m.avgLatencyMs} ms`,
       status: moduleChecksStatus(counts),
       counts,
-      /** Fixed 34px warn/fail segments as in the design, unless nothing passed (then all grow). */
+      /** Failed, warning, passed. Fixed 34px fail/warn segments as in the design, unless nothing passed. */
       bar: [
-        { status: 'pass' as const, n: counts.pass },
-        { status: 'warn' as const, n: counts.warn, ...(counts.pass > 0 ? { width: 34 } : {}) },
         { status: 'fail' as const, n: counts.fail, ...(counts.pass > 0 ? { width: 34 } : {}) },
+        { status: 'warn' as const, n: counts.warn, ...(counts.pass > 0 ? { width: 34 } : {}) },
+        { status: 'pass' as const, n: counts.pass },
       ],
       reportHref,
       retestIds: m.checks
@@ -138,4 +135,5 @@ export type ModuleChecksViewState =
       readonly model: ModuleChecksModel;
       readonly retestingFailed: boolean;
       readonly loadingMore: boolean;
+      readonly downloading: boolean;
     };

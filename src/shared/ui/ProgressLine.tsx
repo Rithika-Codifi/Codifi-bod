@@ -20,7 +20,7 @@ export function ProgressLine({
   );
 }
 
-/** 6px segmented line (module rows). Zero segments keep their 2px gap, as in the design. */
+/** 6px segmented line (module rows): failed, warning, passed. Zero segments keep their 2px gap, as in the design. */
 export function SegmentedLine({
   pass,
   warn,
@@ -34,9 +34,9 @@ export function SegmentedLine({
 }) {
   return (
     <div className={cn('flex h-[6px] gap-[2px]', className)} aria-hidden="true">
-      <div className="bg-pass" style={{ flex: `${pass} 1 0` }} />
-      <div className="bg-warn" style={{ flex: `${warn} 1 0` }} />
       <div className="bg-fail" style={{ flex: `${fail} 1 0` }} />
+      <div className="bg-warn" style={{ flex: `${warn} 1 0` }} />
+      <div className="bg-pass" style={{ flex: `${pass} 1 0` }} />
     </div>
   );
 }

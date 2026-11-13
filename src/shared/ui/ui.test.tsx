@@ -17,6 +17,19 @@ describe('StatusBadge', () => {
 });
 
 describe('SegmentedBar', () => {
+  it('always orders failed, warning, passed', () => {
+    render(
+      <SegmentedBar
+        segments={[
+          { status: 'pass', n: 31 },
+          { status: 'warn', n: 1 },
+          { status: 'fail', n: 2 },
+        ]}
+      />,
+    );
+    expect(screen.getByRole('img').textContent).toBe('2131');
+  });
+
   it('hides zero segments and shows counts', () => {
     render(
       <SegmentedBar
@@ -27,7 +40,7 @@ describe('SegmentedBar', () => {
         ]}
       />,
     );
-    const bar = screen.getByRole('img', { name: '14 passed, 3 warning' });
+    const bar = screen.getByRole('img', { name: '3 warning, 14 passed' });
     expect(bar.children).toHaveLength(2);
   });
 });

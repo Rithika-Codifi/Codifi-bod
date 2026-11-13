@@ -1,4 +1,4 @@
-import { ErrorState, StatCard, StatCardGrid } from '@/shared/ui';
+import { ErrorState } from '@/shared/ui';
 
 import { AttentionList } from '../components/AttentionList';
 import { HeroCard } from '../components/HeroCard';
@@ -41,18 +41,6 @@ export default function OverviewView() {
               />
             </div>
             <div className="flex flex-col gap-[16px]">
-              <StatCardGrid>
-                <StatCard
-                  to="/customers"
-                  label="Failed checks"
-                  tone="fail"
-                  highlight
-                  {...model.stats.failed}
-                />
-                <StatCard to="/customers" label="Warnings" tone="warn" {...model.stats.warnings} />
-                <StatCard to="/customers" label="ETL jobs done" tone="pass" {...model.stats.etl} />
-                <StatCard to="/customers" label="Avg run time" {...model.stats.avg} />
-              </StatCardGrid>
               <AttentionList items={model.attention} />
             </div>
           </>

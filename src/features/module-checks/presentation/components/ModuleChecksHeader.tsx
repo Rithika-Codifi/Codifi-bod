@@ -1,15 +1,24 @@
 import { BackLink, PageHeader } from '@/shared/layout';
-import { Button, LinkButton, RefreshIcon, SegmentedBar, StatusBadge } from '@/shared/ui';
+import { Button, DownloadIcon, RefreshIcon, SegmentedBar, StatusBadge } from '@/shared/ui';
+// import { LinkButton } from '@/shared/ui'; // used by the disabled "Test report" link
 
 import type { ModuleChecksModel } from '../state/moduleChecksState';
 
 export interface ModuleChecksHeaderProps {
   header: ModuleChecksModel['header'];
   retesting: boolean;
+  downloading: boolean;
   onRetestFailed: () => void;
+  onDownloadReport: () => void;
 }
 
-export function ModuleChecksHeader({ header, retesting, onRetestFailed }: ModuleChecksHeaderProps) {
+export function ModuleChecksHeader({
+  header,
+  retesting,
+  downloading,
+  onRetestFailed,
+  onDownloadReport,
+}: ModuleChecksHeaderProps) {
   const { counts } = header;
   return (
     <PageHeader className="flex flex-col gap-[14px] px-[16px] pt-[10px] pb-[18px]">
@@ -27,13 +36,13 @@ export function ModuleChecksHeader({ header, retesting, onRetestFailed }: Module
         <SegmentedBar segments={header.bar} />
         <div className="flex gap-[14px] font-mono text-[11px] text-muted">
           <span>
-            <b className="text-pass-ink">{counts.pass}</b> passed
+            <b className="text-fail-ink">{counts.fail}</b> failed
           </span>
           <span>
             <b className="text-warn-ink">{counts.warn}</b> warning
           </span>
           <span>
-            <b className="text-fail-ink">{counts.fail}</b> failed
+            <b className="text-pass-ink">{counts.pass}</b> passed
           </span>
           <span>of {counts.total}</span>
         </div>
@@ -48,9 +57,20 @@ export function ModuleChecksHeader({ header, retesting, onRetestFailed }: Module
         >
           Retest failed
         </Button>
+        {/* Navigation to the test report screen is disabled for now; the button downloads a PDF.
         <LinkButton to={header.reportHref} variant="outline" fill>
           Test report
         </LinkButton>
+        */}
+        <Button
+          variant="outline"
+          fill
+          icon={<DownloadIcon size={16} />}
+          loading={downloading}
+          onClick={onDownloadReport}
+        >
+          Download report
+        </Button>
       </div>
     </PageHeader>
   );

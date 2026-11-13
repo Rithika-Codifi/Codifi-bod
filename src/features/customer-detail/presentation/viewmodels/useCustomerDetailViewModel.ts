@@ -24,7 +24,7 @@ export function useCustomerDetailViewModel(): {
 } {
   const { customerId = '' } = useParams();
   const navigate = useNavigate();
-  const { customerDetail } = useDI();
+  const { customerDetail, moduleChecks } = useDI();
   const queryClient = useQueryClient();
 
   const query = useQuery({
@@ -50,6 +50,14 @@ export function useCustomerDetailViewModel(): {
   });
   const { mutate } = retest;
 
+  // Downloads the customer's Open API checks report as a PDF.
+  const download = useMutation({
+    mutationFn: () => moduleChecks.downloadReport.execute(customerId, { kind: 'module', id: 'open-api' }),
+    onSuccess: () => toast.show('Report downloaded', { tone: 'success' }),
+    onError: (e) => toast.show(messageOf(e), { tone: 'error' }),
+  });
+  const { mutate: startDownload } = download;
+
   // Optimistic "running" state: every job in a pending retest renders as running.
   const pending = useMutationState({
     filters: { mutationKey: customerDetailQueryKeys.retest(customerId), status: 'pending' },
@@ -71,6 +79,9 @@ export function useCustomerDetailViewModel(): {
         case 'retestFailed':
           if (model && model.header.retestJobIds.length > 0) mutate([...model.header.retestJobIds]);
           return;
+        case 'downloadReport':
+          startDownload();
+          return;
         case 'openEtl':
           navigate(`/customers/${customerId}/etl/${intent.jobId}`);
           return;
@@ -79,7 +90,7 @@ export function useCustomerDetailViewModel(): {
           return;
       }
     },
-    [refetch, mutate, model, running, navigate, customerId],
+    [refetch, mutate, startDownload, model, running, navigate, customerId],
   );
 
   const state = useMemo<CustomerDetailViewState>(() => {
@@ -93,8 +104,22 @@ export function useCustomerDetailViewModel(): {
         notFound: isAppError(e) && e.kind === 'not-found',
       };
     }
-    return { status: 'success', model, retestingFailed: retest.isPending && running.size > 0 };
-  }, [query.isPending, query.isError, query.error, query.isFetching, model, retest.isPending, running]);
+    return {
+      status: 'success',
+      model,
+      retestingFailed: retest.isPending && running.size > 0,
+      downloading: download.isPending,
+    };
+  }, [
+    query.isPending,
+    query.isError,
+    query.error,
+    query.isFetching,
+    model,
+    retest.isPending,
+    running,
+    download.isPending,
+  ]);
 
   return { state, onIntent };
 }

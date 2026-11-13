@@ -18,8 +18,14 @@ import {
   ModuleChecksMockDataSource,
   ModuleChecksRemoteDataSource,
   ModuleChecksRepositoryImpl,
+  PdfChecksReportExporter,
 } from '@/features/module-checks/data';
-import { GetEtlChecks, GetModuleChecks, RetestChecks } from '@/features/module-checks/domain';
+import {
+  DownloadChecksReport,
+  GetEtlChecks,
+  GetModuleChecks,
+  RetestChecks,
+} from '@/features/module-checks/domain';
 import {
   OverviewMockDataSource,
   OverviewRemoteDataSource,
@@ -47,6 +53,7 @@ export interface Container {
     readonly getModuleChecks: GetModuleChecks;
     readonly getEtlChecks: GetEtlChecks;
     readonly retestChecks: RetestChecks;
+    readonly downloadReport: DownloadChecksReport;
   };
   readonly overview: {
     readonly getOverview: GetOverview;
@@ -95,6 +102,7 @@ export function createContainer(useMock: boolean = env.useMock): Container {
       getModuleChecks: new GetModuleChecks(moduleChecksRepo),
       getEtlChecks: new GetEtlChecks(moduleChecksRepo),
       retestChecks: new RetestChecks(moduleChecksRepo),
+      downloadReport: new DownloadChecksReport(moduleChecksRepo, new PdfChecksReportExporter()),
     },
     overview: {
       getOverview: new GetOverview(overviewRepo),

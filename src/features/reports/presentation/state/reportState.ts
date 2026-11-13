@@ -36,9 +36,9 @@ export function selectReport(r: TestRun) {
     result: {
       summary: `${total} checks · ${passRate(r)}% pass`,
       segments: [
-        { status: 'pass' as const, n: r.counts.pass },
-        { status: 'warn' as const, n: r.counts.warn, width: 30 },
         { status: 'fail' as const, n: r.counts.fail, width: 34 },
+        { status: 'warn' as const, n: r.counts.warn, width: 30 },
+        { status: 'pass' as const, n: r.counts.pass },
       ],
       history: r.history.map((h) => ({
         key: h.runId,

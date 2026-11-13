@@ -1,5 +1,5 @@
 import type { Status } from '@/core/domain';
-import { formatDuration, formatHeaderDateIST } from '@/core/utils';
+import { formatHeaderDateIST } from '@/core/utils';
 
 import { minutesToCutoff, overallStatus, totalOf, windowRatio, type Overview } from '../../domain';
 
@@ -33,14 +33,14 @@ export function selectOverview(o: Overview) {
       sub: hero.sub(o),
       total,
       bar: [
-        { status: 'pass' as const, n: o.customers.pass },
-        { status: 'warn' as const, n: o.customers.warn },
         { status: 'fail' as const, n: o.customers.fail },
+        { status: 'warn' as const, n: o.customers.warn },
+        { status: 'pass' as const, n: o.customers.pass },
       ],
       legend: [
-        { status: 'pass' as const, label: 'Passed', n: o.customers.pass, pct: pct(o.customers.pass, total) },
-        { status: 'warn' as const, label: 'Warning', n: o.customers.warn, pct: pct(o.customers.warn, total) },
         { status: 'fail' as const, label: 'Failed', n: o.customers.fail, pct: pct(o.customers.fail, total) },
+        { status: 'warn' as const, label: 'Warning', n: o.customers.warn, pct: pct(o.customers.warn, total) },
+        { status: 'pass' as const, label: 'Passed', n: o.customers.pass, pct: pct(o.customers.pass, total) },
       ],
     },
     window: {
@@ -53,12 +53,6 @@ export function selectOverview(o: Overview) {
       runTitle: `Sanity run ${w.runsDone} of ${w.runsTotal} done`,
       runMeta: `Last ${w.lastRun} · next auto run ${w.nextRun}`,
       timeLeft: `${minutesToCutoff(w, o.now)}m left`,
-    },
-    stats: {
-      failed: { value: o.stats.failedChecks, caption: `${o.stats.failedEtl} ETL · ${o.stats.failedApi} API` },
-      warnings: { value: o.stats.warnings, caption: o.stats.warningsNote },
-      etl: { value: o.stats.etlDone, suffix: `/${o.stats.etlTotal}`, caption: `Across ${total} customers` },
-      avg: { value: formatDuration(o.stats.avgRunSeconds), caption: 'Per customer sanity' },
     },
     attention: o.attention.map((a) => ({
       key: `${a.customerId}-${a.time}`,

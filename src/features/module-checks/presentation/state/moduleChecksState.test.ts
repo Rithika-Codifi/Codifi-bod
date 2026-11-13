@@ -95,8 +95,11 @@ describe('selectModuleChecks', () => {
     const v = selectModuleChecks(notRun, initialModuleChecksUiState, new Set());
     expect(v.rows[0]).toMatchObject({ code: '—', latency: 'not run' });
     expect(v.header.bar.find((s) => s.status === 'fail')).not.toHaveProperty('width');
-    expect(selectModuleChecks(m, initialModuleChecksUiState, new Set()).header.bar[2]).toMatchObject({
-      width: 34,
-    });
+    // Failed, warning, passed; fail/warn keep the design's fixed 34px when something passed.
+    expect(selectModuleChecks(m, initialModuleChecksUiState, new Set()).header.bar).toEqual([
+      { status: 'fail', n: 2, width: 34 },
+      { status: 'warn', n: 1, width: 34 },
+      { status: 'pass', n: 31 },
+    ]);
   });
 });

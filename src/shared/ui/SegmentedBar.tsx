@@ -1,5 +1,5 @@
 import { STATUS_STYLE } from '@/core/config/status';
-import type { Status } from '@/core/domain';
+import { byDisplayOrder, type Status } from '@/core/domain';
 import { cn } from '@/core/utils';
 
 export interface Segment {
@@ -19,7 +19,7 @@ export interface SegmentedBarProps {
   className?: string;
 }
 
-/** Pass/warn/fail split with white mono counts; zero segments are hidden. */
+/** Failed / warning / passed split (always in that order) with white mono counts; zero segments are hidden. */
 export function SegmentedBar({
   segments,
   height = 26,
@@ -27,10 +27,11 @@ export function SegmentedBar({
   label,
   className,
 }: SegmentedBarProps) {
-  const visible = segments.filter((s) => s.n > 0);
+  const visible = segments.filter((s) => s.n > 0).sort(byDisplayOrder);
   return (
     <div
       role="img"
+
       aria-label={
         label ?? visible.map((s) => `${s.n} ${STATUS_STYLE[s.status].label.toLowerCase()}`).join(', ')
       }

@@ -52,7 +52,9 @@ export default function ModuleChecksView() {
       <ModuleChecksHeader
         header={model.header}
         retesting={state.retestingFailed}
+        downloading={state.downloading}
         onRetestFailed={() => onIntent({ type: 'retestFailed' })}
+        onDownloadReport={() => onIntent({ type: 'downloadReport' })}
       />
       <div className="flex flex-col">
         <FilterChips

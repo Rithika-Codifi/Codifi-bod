@@ -1,4 +1,4 @@
-import type { Status } from '@/core/domain';
+import { byDisplayOrder, type Status } from '@/core/domain';
 
 import {
   etlPassed,
@@ -14,6 +14,7 @@ export type CustomerDetailIntent =
   | { type: 'retestJob'; jobId: string }
   /** Open the ETL job's checks screen (/customers/:id/etl/:etlId). */
   | { type: 'openEtl'; jobId: string }
+  | { type: 'downloadReport' }
   | { type: 'retry' };
 
 export interface EtlRowModel {
@@ -39,7 +40,8 @@ export interface ModuleRowModel {
 
 /** Pure projection: server detail + jobs currently being retested → view model. */
 export function selectCustomerDetail(d: CustomerDetail, runningJobIds: ReadonlySet<string>) {
-  const etl: EtlRowModel[] = d.etl.map((j) => {
+  // Failed, warning, then passed (stable within a status).
+  const etl: EtlRowModel[] = [...d.etl].sort(byDisplayOrder).map((j) => {
     const running = runningJobIds.has(j.id);
     const status: Status = running ? 'running' : j.status;
     return {
@@ -91,4 +93,9 @@ export type CustomerDetailViewState =
       readonly retrying: boolean;
       readonly notFound: boolean;
     }
-  | { readonly status: 'success'; readonly model: CustomerDetailModel; readonly retestingFailed: boolean };
+  | {
+      readonly status: 'success';
+      readonly model: CustomerDetailModel;
+      readonly retestingFailed: boolean;
+      readonly downloading: boolean;
+    };

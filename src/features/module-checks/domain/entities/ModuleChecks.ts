@@ -1,4 +1,5 @@
 import type { Status, TimeIST } from '@/core/domain';
+import { formatIndianNumber } from '@/core/utils';
 
 export type HttpMethod = 'GET' | 'POST' | 'PUT' | 'DEL' | 'WS';
 
@@ -58,3 +59,10 @@ export const moduleChecksStatus = (c: CheckCounts): Status => (c.fail ? 'fail' :
 
 export const retestableCheckIds = (m: ModuleChecks): string[] =>
   m.checks.filter((c) => c.status === 'fail' || c.status === 'warn').map((c) => c.id);
+
+/** "30,000 ms · timeout" for failing/slow checks, "58 ms first tick" / "96 ms" for passing ones. */
+export function latencyLabel(c: Pick<ApiCheck, 'latencyMs' | 'latencyNote' | 'status'>): string {
+  const base = `${formatIndianNumber(c.latencyMs)} ms`;
+  if (!c.latencyNote) return base;
+  return c.status === 'pass' ? `${base} ${c.latencyNote}` : `${base} · ${c.latencyNote}`;
+}

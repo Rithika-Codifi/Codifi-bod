@@ -4,10 +4,25 @@ export interface Screen {
   design: string;
   /** Original design source (self-unpacking bundle) rendered in the same Chromium. */
   render: string;
+  /**
+   * Compare only down to the bottom of this element. Used when a requested change removed a
+   * section, so everything below it no longer lines up with the design.
+   */
+  compareUntil?: string;
 }
 
+/** Elements that intentionally differ from the design are marked and masked in every diff. */
+export const DEVIATION_SELECTOR = '[data-design-deviation]';
+
 export const screens: Screen[] = [
-  { name: 'overview', route: '/', design: '1-overview.png', render: '1-overview.html' },
+  {
+    name: 'overview',
+    route: '/',
+    design: '1-overview.png',
+    render: '1-overview.html',
+    // The 2×2 stat cards below the BOD window were removed on request.
+    compareUntil: 'section[aria-label="BOD window"]',
+  },
   { name: 'customers', route: '/customers', design: '2-customers.png', render: '2-customers.html' },
   {
     name: 'customer-detail',
