@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8">
+<title>BOD Monitor — Open API checks</title>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600;700&family=Source+Serif+4:ital,wght@0,400;0,600;1,400&display=swap">
+<style>
+body{margin:0;background:#F3EFE6}
+a{color:#1C1A17;text-decoration:none}a:hover{color:#9A5424}
+@keyframes bodspin{to{transform:rotate(360deg)}}
+</style>
+</helmet>
+<div style="width: 390px; height: 1760px; box-sizing: border-box; background: #F3EFE6; font-family: Inter, system-ui, sans-serif; color: #1C1A17; display: flex; flex-direction: column">
+
+<header style="display: flex; flex-direction: column; gap: 14px; padding: 10px 16px 18px; border-bottom: 1px solid #E2DBCD">
+<div style="display: flex; align-items: center; justify-content: space-between; margin-left: -10px">
+<a href="Customer.dc.html" style="display: flex; align-items: center; gap: 2px; height: 44px; padding-right: 8px; font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: #5F594F"><svg width="22" height="22" sc-camel-view-box="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"></path></svg>Cholamandalam Sec.</a>
+<span style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #6E675C">Module</span>
+</div>
+<div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 12px">
+<div style="display: flex; flex-direction: column; gap: 4px">
+<h1 style="margin: 0; font-family: 'Source Serif 4', Georgia, serif; font-size: 30px; font-weight: 400; line-height: 1.05">Open API <em style="font-style: italic; color: #6E675C; font-size: 22px">checks</em></h1>
+<span style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #5F594F">Last check 07:38:12 · avg 182 ms</span>
+</div>
+<span style="flex: none; display: inline-flex; align-items: center; padding: 5px 9px; border: 1px solid {{head.bd}}; background: {{head.tint}}; color: {{head.ink}}; font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase">{{head.word}}</span>
+</div>
+<div style="display: flex; flex-direction: column; gap: 8px">
+<div style="display: flex; height: 26px; gap: 2px">
+<div style="flex: {{cnt.pass}} 1 0; background: #2E7A4E; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 700">{{cnt.pass}}</div>
+<sc-if value="{{cnt.hasWarn}}" hint-placeholder-val="{{ true }}"><div style="flex: 0 0 34px; background: #C08A2B; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 700">{{cnt.warn}}</div></sc-if>
+<sc-if value="{{cnt.hasFail}}" hint-placeholder-val="{{ true }}"><div style="flex: 0 0 34px; background: #B23B2E; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 700">{{cnt.fail}}</div></sc-if>
+</div>
+<div style="display: flex; gap: 14px; font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #5F594F">
+<span><b style="color: #23633E">{{cnt.pass}}</b> passed</span>
+<span><b style="color: #7A5A12">{{cnt.warn}}</b> warning</span>
+<span><b style="color: #962F24">{{cnt.fail}}</b> failed</span>
+<span>of 34</span>
+</div>
+</div>
+<div style="display: flex; gap: 10px">
+<button sc-camel-on-click="{{retestFailed}}" style="flex: 1 1 0; height: 46px; display: flex; align-items: center; justify-content: center; gap: 8px; background: #1C1A17; color: #FFFFFF; border: 0; font-family: 'JetBrains Mono', monospace; font-size: 11.5px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer"><svg width="16" height="16" sc-camel-view-box="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 12a8 8 0 1 1-2.4-5.7"></path><path d="M20 4v5h-5"></path></svg>Retest failed</button>
+<a href="Report.dc.html" style="flex: 1 1 0; height: 46px; box-sizing: border-box; border: 1px solid #1C1A17; color: #1C1A17; display: flex; align-items: center; justify-content: center; font-family: 'JetBrains Mono', monospace; font-size: 11.5px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase">Test report</a>
+</div>
+</header>
+
+<div role="group" aria-label="Filter checks" style="display: flex; gap: 8px; padding: 14px 16px 4px; flex-wrap: wrap">
+<sc-for list="{{chips}}" as="c" hint-placeholder-count="4">
+<button aria-pressed="{{c.on}}" sc-camel-on-click="{{c.pick}}" style="height: 36px; padding: 0 12px; border: 1px solid {{c.bd}}; background: {{c.bg}}; color: {{c.fg}}; font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; cursor: pointer">{{c.label}} · {{c.n}}</button>
+</sc-for>
+</div>
+
+<main style="padding: 10px 16px 24px">
+<section aria-label="API checks" style="display: flex; flex-direction: column; background: #FFFFFF; border: 1px solid #E2DBCD">
+<sc-for list="{{rows}}" as="r" hint-placeholder-count="12">
+<div style="display: flex; flex-direction: column; gap: 8px; padding: 12px 8px 12px 14px; border-bottom: 1px solid #EFEAE0; background: {{r.rowBg}}">
+<div style="display: flex; align-items: center; gap: 10px">
+<span style="flex: none; width: 10px; height: 10px; border-radius: 50%; background: {{r.dot}}"></span>
+<div style="flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 4px">
+<span style="font-size: 14px; font-weight: 600">{{r.n}}</span>
+<span style="display: flex; align-items: center; gap: 6px; font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #5F594F; white-space: nowrap; overflow: hidden"><b style="padding: 1px 4px; background: #EFEAE0; color: #1C1A17; font-size: 10px">{{r.m}}</b>{{r.path}}</span>
+</div>
+<span style="flex: none; padding: 3px 6px; border: 1px solid {{r.bd}}; background: {{r.tint}}; color: {{r.ink}}; font-family: 'JetBrains Mono', monospace; font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase">{{r.word}}</span>
+<button aria-label="Retest {{r.n}}" sc-camel-on-click="{{r.retest}}" style="flex: none; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; background: transparent; border: 0; color: #1C1A17; cursor: pointer">
+<svg width="18" height="18" sc-camel-view-box="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="{{r.spin}}"><path d="M20 12a8 8 0 1 1-2.4-5.7"></path><path d="M20 4v5h-5"></path></svg>
+</button>
+</div>
+<div style="display: flex; gap: 14px; padding-left: 20px; font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #5F594F">
+<span>{{r.t}}</span>
+<span>HTTP <b style="color: {{r.codeInk}}">{{r.code}}</b></span>
+<span style="color: {{r.latInk}}">{{r.lat}}</span>
+</div>
+<sc-if value="{{r.hasErr}}" hint-placeholder-val="{{ false }}">
+<div style="display: flex; flex-direction: column; gap: 8px; margin-left: 20px; margin-right: 8px; padding: 10px 12px; background: #F7F3EC; border: 1px solid #EFE4D4">
+<span style="font-family: 'JetBrains Mono', monospace; font-size: 11px; line-height: 1.5; color: #1C1A17">{{r.err}}</span>
+<a href="Report.dc.html" style="align-self: flex-start; display: flex; align-items: center; gap: 6px; min-height: 32px; font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #9A5424">Open result log<svg width="14" height="14" sc-camel-view-box="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"></path><path d="M13 6l6 6-6 6"></path></svg></a>
+</div>
+</sc-if>
+</div>
+</sc-for>
+<sc-if value="{{showMore}}" hint-placeholder-val="{{ true }}">
+<button style="height: 52px; display: flex; align-items: center; justify-content: center; gap: 8px; background: #FFFFFF; border: 0; color: #1C1A17; font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer">Show 21 more passed checks<svg width="14" height="14" sc-camel-view-box="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></button>
+</sc-if>
+</section>
+</main>
+
+<nav aria-label="Primary" style="margin-top: auto; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); border-top: 1px solid #E2DBCD; background: #EFEAE0">
+<a href="Main.dc.html" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; height: 64px; color: #5F594F; border-top: 2px solid transparent">
+<svg width="20" height="20" sc-camel-view-box="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="7" height="7"></rect><rect x="13" y="4" width="7" height="7"></rect><rect x="4" y="13" width="7" height="7"></rect><rect x="13" y="13" width="7" height="7"></rect></svg>
+<span style="font-family: 'JetBrains Mono', monospace; font-size: 10.5px; letter-spacing: 0.1em; text-transform: uppercase">Overview</span>
+</a>
+<a href="Customers.dc.html" aria-current="page" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; height: 64px; background: #F6E6C8; color: #1C1A17; border-top: 2px solid #B5652E">
+<svg width="20" height="20" sc-camel-view-box="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.5"></circle><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6"></path><path d="M16 4.5a3.5 3.5 0 0 1 0 7"></path><path d="M18 14.5c1.8.8 3 2.9 3 5.5"></path></svg>
+<span style="font-family: 'JetBrains Mono', monospace; font-size: 10.5px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase">Customers</span>
+</a>
+<a href="Report.dc.html" style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; height: 64px; color: #5F594F; border-top: 2px solid transparent">
+<svg width="20" height="20" sc-camel-view-box="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h9l4 4v14H6z"></path><path d="M14 3v5h5"></path><path d="M9 13h7"></path><path d="M9 17h5"></path></svg>
+<span style="font-family: 'JetBrains Mono', monospace; font-size: 10.5px; letter-spacing: 0.1em; text-transform: uppercase">Reports</span>
+</a>
+</nav>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script="" data-props="{&quot;$preview&quot;:{&quot;width&quot;:390,&quot;height&quot;:1760}}">
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { run: {}, filter: 'all' };
+    this.timers = [];
+  }
+  componentWillUnmount() {
+    this.timers.forEach((t) => clearTimeout(t));
+  }
+  retest(keys) {
+    const run = { ...this.state.run };
+    keys.forEach((k) => { run[k] = 'running'; });
+    this.setState({ run });
+    this.timers.push(setTimeout(() => {
+      const done = { ...this.state.run };
+      keys.forEach((k) => { done[k] = 'done'; });
+      this.setState({ run: done });
+    }, 2400));
+  }
+  renderVals() {
+    const S = {
+      fail: { word: 'Failed', dot: '#B23B2E', bd: '#B23B2E', tint: '#FBEAE7', ink: '#962F24' },
+      warn: { word: 'Warning', dot: '#C08A2B', bd: '#C08A2B', tint: '#FBF1DC', ink: '#7A5A12' },
+      pass: { word: 'Passed', dot: '#2E7A4E', bd: '#2E7A4E', tint: '#E6F2EA', ink: '#23633E' },
+      running: { word: 'Running', dot: '#2D5A86', bd: '#2D5A86', tint: '#E4ECF5', ink: '#244B70' }
+    };
+    const base = [
+      { k: 'place', n: 'Place order', m: 'POST', path: '/orders/regular', s: 'fail', t: '07:38:05', code: '502', lat: '30,000 ms · timeout', err: 'Expected 200, got 502 Bad Gateway. Upstream OMS gateway did not respond within 30 s.' },
+      { k: 'modify', n: 'Modify order', m: 'PUT', path: '/orders/{id}', s: 'fail', t: '07:38:06', code: '502', lat: '30,000 ms · timeout', err: 'Depends on Place order — no open order to modify. Same upstream 502.' },
+      { k: 'funds', n: 'Funds & limits', m: 'GET', path: '/funds/limits', s: 'warn', t: '07:38:07', code: '200', lat: '1,240 ms · SLA 800', err: '' },
+      { k: 'login', n: 'Login & session', m: 'POST', path: '/session/login', s: 'pass', t: '07:38:02', code: '200', lat: '140 ms', err: '' },
+      { k: 'profile', n: 'User profile', m: 'GET', path: '/session/profile', s: 'pass', t: '07:38:03', code: '200', lat: '96 ms', err: '' },
+      { k: 'cancel', n: 'Cancel order', m: 'DEL', path: '/orders/{id}', s: 'pass', t: '07:38:06', code: '200', lat: '210 ms', err: '' },
+      { k: 'obook', n: 'Order book', m: 'GET', path: '/orders', s: 'pass', t: '07:38:08', code: '200', lat: '160 ms', err: '' },
+      { k: 'tbook', n: 'Trade book', m: 'GET', path: '/trades', s: 'pass', t: '07:38:08', code: '200', lat: '150 ms', err: '' },
+      { k: 'pos', n: 'Positions', m: 'GET', path: '/positions', s: 'pass', t: '07:38:09', code: '200', lat: '172 ms', err: '' },
+      { k: 'hold', n: 'Holdings', m: 'GET', path: '/holdings', s: 'pass', t: '07:38:09', code: '200', lat: '188 ms', err: '' },
+      { k: 'quote', n: 'Market quote', m: 'GET', path: '/quotes', s: 'pass', t: '07:38:10', code: '200', lat: '74 ms', err: '' },
+      { k: 'ws', n: 'WebSocket market feed', m: 'WS', path: '/feed', s: 'pass', t: '07:38:11', code: '101', lat: '58 ms first tick', err: '' },
+      { k: 'gtt', n: 'GTT orders', m: 'POST', path: '/gtt', s: 'pass', t: '07:38:12', code: '200', lat: '230 ms', err: '' }
+    ];
+    const run = this.state.run;
+    const all = base.map((r) => {
+      const st = run[r.k];
+      const s = st === 'running' ? 'running' : st === 'done' ? 'pass' : r.s;
+      const done = st === 'done';
+      return {
+        ...r, ...S[s], s,
+        t: st === 'running' ? 'Retesting…' : done ? 'Just now' : r.t,
+        code: st === 'running' ? '—' : done ? (r.m === 'WS' ? '101' : '200') : r.code,
+        lat: st === 'running' ? '' : done && r.s !== 'pass' ? '164 ms' : r.lat,
+        hasErr: s === 'fail' && !!r.err,
+        rowBg: s === 'fail' ? '#FFFBFA' : '#FFFFFF',
+        codeInk: s === 'fail' ? '#962F24' : '#1C1A17',
+        latInk: s === 'warn' ? '#7A5A12' : s === 'fail' ? '#962F24' : '#5F594F',
+        spin: st === 'running' ? 'animation: bodspin 0.9s linear infinite' : '',
+        retest: () => this.retest([r.k])
+      };
+    });
+    const n = (k) => all.filter((r) => r.s === k).length;
+    const extra = 21;
+    const cnt = { pass: n('pass') + extra, warn: n('warn'), fail: n('fail') };
+    cnt.hasWarn = cnt.warn > 0;
+    cnt.hasFail = cnt.fail > 0;
+    const head = cnt.fail ? S.fail : cnt.warn ? S.warn : S.pass;
+    const f = this.state.filter;
+    const defs = [
+      { k: 'all', label: 'All', n: 34 },
+      { k: 'fail', label: 'Failed', n: cnt.fail },
+      { k: 'warn', label: 'Warning', n: cnt.warn },
+      { k: 'pass', label: 'Passed', n: cnt.pass }
+    ];
+    const chips = defs.map((d) => ({
+      ...d,
+      on: f === d.k ? 'true' : 'false',
+      bg: f === d.k ? '#1C1A17' : '#FFFFFF',
+      fg: f === d.k ? '#FFFFFF' : '#1C1A17',
+      bd: f === d.k ? '#1C1A17' : '#E2DBCD',
+      pick: () => this.setState({ filter: d.k })
+    }));
+    const rows = all.filter((r) => f === 'all' || r.s === f);
+    const failedKeys = all.filter((r) => r.s === 'fail' || r.s === 'warn').map((r) => r.k);
+    return { cnt, head, chips, rows, showMore: f === 'all' || f === 'pass', retestFailed: () => this.retest(failedKeys) };
+  }
+}
+</script>
+
+
+</body></html>

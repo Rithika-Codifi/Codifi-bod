@@ -1,0 +1,105 @@
+/* Design tokens. Light values are taken verbatim from docs/design/source. */
+:root,
+[data-theme='light'] {
+  color-scheme: light;
+
+  --bg: #f3efe6;
+  --surface: #ffffff;
+  --surface-muted: #efeae0;
+  --surface-sunken: #f7f3ec;
+  --highlight: #f6e6c8;
+  --border: #e2dbcd;
+  --border-soft: #efe4d4;
+  --track: #ece6da;
+
+  --text: #1c1a17;
+  --muted: #5f594f;
+  --subtle: #6e675c;
+  --on-dark: #ffffff;
+  --dark: #1c1a17;
+
+  --accent: #b5652e;
+  --accent-strong: #9a5424;
+
+  --pass: #2e7a4e;
+  --pass-tint: #e6f2ea;
+  --pass-ink: #23633e;
+  --pass-ring: #d3e9db;
+
+  --warn: #c08a2b;
+  --warn-tint: #fbf1dc;
+  --warn-ink: #7a5a12;
+  --warn-strong: #8a6516;
+  --warn-ring: #f4e6c6;
+
+  --fail: #b23b2e;
+  --fail-tint: #fbeae7;
+  --fail-ink: #962f24;
+  --fail-strong: #a3342a;
+  --fail-ring: #f5d9d4;
+  --fail-row: #fffbfa;
+
+  --running: #2d5a86;
+  --running-tint: #e4ecf5;
+  --running-ink: #244b70;
+
+  --code-bg: #1c1a17;
+  --code-text: #ede7db;
+
+  --logo-bg: #1c1a17;
+  --logo-red: #e0796b;
+  --logo-amber: #e2b354;
+  --logo-green: #6fbf8e;
+}
+
+[data-theme='dark'] {
+  color-scheme: dark;
+
+  --bg: #171512;
+  --surface: #211e1a;
+  --surface-muted: #2a2621;
+  --surface-sunken: #1d1a16;
+  --highlight: #3a2e1c;
+  --border: #39342c;
+  --border-soft: #332d25;
+  --track: #2f2a23;
+
+  --text: #f1ece2;
+  --muted: #b3ab9e;
+  --subtle: #a0988a;
+  --on-dark: #171512;
+  --dark: #f1ece2;
+
+  --accent: #d98a50;
+  --accent-strong: #e8a36f;
+
+  --pass: #4fa873;
+  --pass-tint: #1d2e23;
+  --pass-ink: #8fd3a9;
+  --pass-ring: #24402e;
+
+  --warn: #d6a344;
+  --warn-tint: #33291a;
+  --warn-ink: #ebc77e;
+  --warn-strong: #e3b45c;
+  --warn-ring: #4a3a1e;
+
+  --fail: #d65a4b;
+  --fail-tint: #3a201c;
+  --fail-ink: #f2a093;
+  --fail-strong: #e06a5a;
+  --fail-ring: #552a24;
+  --fail-row: #2a1d1a;
+
+  --running: #5b8cc0;
+  --running-tint: #1c2836;
+  --running-ink: #a5c4e6;
+
+  --code-bg: #0e0d0b;
+  --code-text: #ede7db;
+
+  --logo-bg: #0e0d0b;
+  --logo-red: #e0796b;
+  --logo-amber: #e2b354;
+  --logo-green: #6fbf8e;
+}

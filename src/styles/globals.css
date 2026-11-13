@@ -1,0 +1,126 @@
+@import 'tailwindcss';
+@import './tokens.css';
+@import './fonts.css';
+
+/* Only tokens are allowed as colors: drop Tailwind's default palette. */
+@theme {
+  --color-*: initial;
+  --font-*: initial;
+  --animate-bodspin: bodspin 0.9s linear infinite;
+  --animate-pulse-soft: pulse-soft 1.4s ease-in-out infinite;
+
+  @keyframes bodspin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  @keyframes pulse-soft {
+    50% {
+      opacity: 0.55;
+    }
+  }
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-muted: var(--surface-muted);
+  --color-surface-sunken: var(--surface-sunken);
+  --color-highlight: var(--highlight);
+  --color-border: var(--border);
+  --color-border-soft: var(--border-soft);
+  --color-track: var(--track);
+  --color-text: var(--text);
+  --color-muted: var(--muted);
+  --color-subtle: var(--subtle);
+  --color-on-dark: var(--on-dark);
+  --color-dark: var(--dark);
+  --color-accent: var(--accent);
+  --color-accent-strong: var(--accent-strong);
+  --color-pass: var(--pass);
+  --color-pass-tint: var(--pass-tint);
+  --color-pass-ink: var(--pass-ink);
+  --color-pass-ring: var(--pass-ring);
+  --color-warn: var(--warn);
+  --color-warn-tint: var(--warn-tint);
+  --color-warn-ink: var(--warn-ink);
+  --color-warn-strong: var(--warn-strong);
+  --color-warn-ring: var(--warn-ring);
+  --color-fail: var(--fail);
+  --color-fail-tint: var(--fail-tint);
+  --color-fail-ink: var(--fail-ink);
+  --color-fail-strong: var(--fail-strong);
+  --color-fail-ring: var(--fail-ring);
+  --color-fail-row: var(--fail-row);
+  --color-running: var(--running);
+  --color-running-tint: var(--running-tint);
+  --color-running-ink: var(--running-ink);
+  --color-code-bg: var(--code-bg);
+  --color-code-text: var(--code-text);
+  --color-logo-bg: var(--logo-bg);
+  --color-logo-red: var(--logo-red);
+  --color-logo-amber: var(--logo-amber);
+  --color-logo-green: var(--logo-green);
+  --color-transparent: transparent;
+  --color-current: currentColor;
+
+  --font-serif: 'Source Serif 4', Georgia, serif;
+  --font-sans: Inter, system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+}
+
+@layer base {
+  /*
+   * Match the design sources, which use browser defaults: content-box sizing (so height /
+   * min-height exclude padding and border) except form controls, which the UA makes border-box.
+   */
+  *,
+  ::before,
+  ::after {
+    box-sizing: content-box;
+  }
+  button,
+  select,
+  input[type='search'],
+  input[type='button'],
+  input[type='submit'] {
+    box-sizing: border-box;
+  }
+  /* UA default padding that Tailwind preflight removes (affects flex sizing and text offset). */
+  button {
+    padding: 1px 6px;
+  }
+  input {
+    padding: 1px 2px;
+  }
+
+  /* Browser-default line-height, Inter body, token colors. */
+  html {
+    line-height: normal;
+    -webkit-tap-highlight-color: transparent;
+  }
+  body {
+    margin: 0;
+    min-height: 100dvh;
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-sans);
+  }
+  a {
+    color: var(--text);
+    text-decoration: none;
+  }
+  a:hover {
+    color: var(--accent-strong);
+  }
+  button {
+    cursor: pointer;
+  }
+  input::placeholder {
+    color: revert;
+  }
+  :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+}

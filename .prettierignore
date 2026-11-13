@@ -1,0 +1,11 @@
+dist
+dev-dist
+coverage
+node_modules
+docs/design
+visual-diffs
+test-results
+playwright-report
+package-lock.json
+public
+.tmp
